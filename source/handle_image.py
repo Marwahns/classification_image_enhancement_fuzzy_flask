@@ -3,26 +3,42 @@ import numpy as np
 import cv2
 import io
 import imageio
+import base64
 from base64 import b64encode
 import pydicom
 
 
-def convert_dcm(dcm_file_path):
-    # Read DCM file
-    dcm = pydicom.dcmread(dcm_file_path)
+def convert_dcm(file_content):
+    # Membuat objek file-like dari konten file
+    file_obj = io.BytesIO(file_content)
 
-    # Get pixel data from DCM
-    pixel_array = dcm.pixel_array.astype(np.uint8)
+    # Membaca file DICOM dari objek file-like
+    ds = pydicom.dcmread(file_obj)
 
-    # Convert to JPEG and encode as base64
-    data = io.BytesIO()
-    imageio.imwrite(data, pixel_array, format="JPEG")
-    data.seek(0)
+    # Mendapatkan array piksel
+    im = ds.pixel_array.astype(float)
 
-    encoded = b64encode(data.getvalue())
-    decoded = encoded.decode("utf-8")
+    # Melakukan normalisasi dan rescaling
+    rescaled_image = (np.maximum(im, 0) / im.max()) * 255
 
-    return "data:image/jpeg;base64,%s" % decoded
+    # Mengonversi tipe data menjadi unsigned integer 8-bit
+    final_image = np.uint8(rescaled_image)
+
+    # Membuat objek gambar dari array piksel
+    image = Image.fromarray(final_image)
+
+    # # Membuat objek file sementara dalam memori
+    # img_byte_arr = io.BytesIO()
+    # image.save(img_byte_arr, format='PNG')
+    # img_byte_arr.seek(0)
+
+    # return img_byte_arr
+    
+    # Mengonversi gambar menjadi format JPEG
+    with io.BytesIO() as output:
+        image.save(output, format='JPEG')
+        encoded_image = base64.b64encode(output.getvalue()).decode('utf-8')
+        return encoded_image
 
 
 def open_image(file):

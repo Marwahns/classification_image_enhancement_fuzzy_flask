@@ -8,6 +8,28 @@ import io
 app = Flask(__name__)
 
 
+# @app.route('/convert_dcm', methods=['POST'])
+# def convert_dcm_handler():
+#     if 'file-image' in request.files:
+#         file = request.files['file-image']
+#         if file.filename.lower().endswith('.dcm'):
+#             encoded_image = convert_dcm_to_jpeg(file.read())  # Pass the file content (byte data)
+#             return jsonify({'encoded_image': encoded_image})
+
+#     return jsonify({'error': 'Invalid file format. Only .dcm files are supported.'})
+
+@app.route('/convert_dcm', methods=['POST'])
+def convert_dcm_handler():
+    if 'file-image' in request.files:
+        file = request.files['file-image']
+        if file.filename.lower().endswith('.dcm'):
+            encoded_image = convert_dcm(file.read())  # Pass the file content (byte data)
+            return jsonify({'encoded_image': encoded_image})
+
+    return jsonify({'error': 'Invalid file format. Only .dcm files are supported.'})
+
+
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     pneumonia_percentage = None  # Initialize the variable
@@ -45,23 +67,6 @@ def process():
 
     # Handle other cases or return an error message
     return "Invalid request"
-
-
-# @app.route("/convert_dcm", methods=["POST"])
-# def convert_dcm():
-#     # Ambil file .dcm dari permintaan
-#     dcm_file = request.files["file-image"]
-
-#     # Simpan file .dcm ke buffer
-#     dcm_buffer = io.BytesIO()
-#     dcm_file.save(dcm_buffer)
-#     dcm_buffer.seek(0)
-
-#     # Konversi DCM ke JPEG dan encode sebagai base64
-#     encoded_image = convert_dcm(dcm_buffer)
-
-#     # Mengembalikan hasil konversi sebagai respons JSON
-#     return jsonify({"encoded_image": encoded_image})
 
 
 # Menangani halaman 404

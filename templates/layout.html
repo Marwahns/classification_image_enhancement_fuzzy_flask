@@ -207,13 +207,74 @@
                 overlay = document.getElementById("overlay");
 
 
+            // const hidden = document.getElementById("hidden-input");
+            // hidden.onchange = (e) => {
+            //     for (const file of e.target.files) {
+            //         addFile(gallery, file);
+            //     }
+            // };
+            // document.getElementById("button").onclick = () => hidden.click();
+
             const hidden = document.getElementById("hidden-input");
             hidden.onchange = (e) => {
                 for (const file of e.target.files) {
-                    addFile(gallery, file);
+                    const fileName = file.name;
+                    const fileExt = fileName.split('.').pop().toLowerCase();
+                    alert(fileExt)
+
+                    if (fileExt === 'dcm') {
+                        // Trigger the /convert_dcm endpoint for DCM file
+                        convertDCM(file);
+                    } else {
+                        // Add non-DCM files to the gallery
+                        addFile(gallery, file);
+                    }
                 }
             };
+
             document.getElementById("button").onclick = () => hidden.click();
+
+            // After setting the encoded_image value
+            // const imageUrl = "data:image/jpeg;base64," + encoded_image;
+            // const imgPreview = clone.querySelector(".img-preview");
+            // imgPreview.src = imageUrl;
+            // imgPreview.alt = file.name;
+
+            function convertDCM(file) {
+                const formData = new FormData();
+                formData.append('file-image', file);
+
+                $.ajax({
+                    url: '/convert_dcm',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        const encodedImage = response.encoded_image;
+
+                        // Decode the base64-encoded image data
+                        const byteCharacters = atob(encodedImage);
+                        const byteNumbers = new Array(byteCharacters.length);
+                        for (let i = 0; i < byteCharacters.length; i++) {
+                            byteNumbers[i] = byteCharacters.charCodeAt(i);
+                        }
+                        const byteArray = new Uint8Array(byteNumbers);
+
+                        // Create a new Blob object from the decoded image data
+                        const blob = new Blob([byteArray], { type: 'image/jpeg' });
+
+                        // Create a new File object from the Blob
+                        const convertedFile = new File([blob], file.name, { type: 'image/jpeg' });
+
+                        // Add the converted file to the gallery
+                        addFile(gallery, convertedFile);
+                    },
+                    error: function (xhr, status, error) {
+                        console.log(error);
+                    }
+                });
+            }
 
             // use to check if a file is being dragged
             const hasFiles = ({ dataTransfer: { types = [] } }) =>
@@ -394,6 +455,7 @@
                 const fileName = file.name;
                 const fileExt = fileName.split('.').pop();
 
+                // alert(fileExt)
                 // Gunakan fileExt sesuai kebutuhan Anda
                 // console.log(fileExt);
 
@@ -403,7 +465,7 @@
                 //     submitButton.disabled = true;
                 //     console.log('File extension is not .dcm');
                 // }
-                
+
             });
 
 
