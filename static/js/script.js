@@ -342,6 +342,7 @@ $(document).ready(() => {
         $("#image-container").empty();
         $("#image-container-sugeno").empty();
         $("#image-container-tsukamoto").empty();
+        
         // $('#enhancement').addClass("hidden")
         // $('#submit').removeClass('hidden')
         // $('#submit').addClass("visible")

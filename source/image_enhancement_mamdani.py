@@ -18,10 +18,7 @@
 import math
 
 import cv2
-import matplotlib.pyplot as plt
 import numpy as np
-from IPython.display import display, Markdown
-from glob2 import glob
 
 
 ## Fuzzification of Pixel Intensity
@@ -146,4 +143,3 @@ def FuzzyContrastEnhance(gray):
         enhanced = cv2.UMat(enhanced.astype(np.uint8))
 
     return enhanced
-
