@@ -217,6 +217,9 @@ $(document).ready(() => {
                 const sugenoEnhancement = response.sugeno_enhancement
                 const tsukamotoEnhancement = response.tsukamoto_enhancement
 
+                // Clahe
+                const claheEnhancement = response.clahe_enhancement
+
                 // Combine Enhancement
                 const histogramCombined = response.histogram_encoded_image
                 const mamdaniCombined = response.encoded_image;
@@ -236,6 +239,8 @@ $(document).ready(() => {
                 $("#image-sugeno").html("<div class='flex flex-col items-center justify-center h-full'><span class='text-small text-gray-500'>Fuzzy Sugeno</span><img src='" + sugenoEnhancement + "' width='300' height='400'></div>");
 
                 $("#image-tsukamoto").html("<div class='flex flex-col items-center justify-center h-full'><span class='text-small text-gray-500'>Fuzzy Tsukamoto</span><img src='" + tsukamotoEnhancement + "' width='300' height='400'></div>");
+
+                $("#image-clahe").html("<div class='flex flex-col items-center justify-center h-full'><span class='text-small text-gray-500'>Clahe</span><img src='" + claheEnhancement + "' width='300' height='400'></div>");
 
                 $("#image-container-histogram").html("<div class='flex flex-col items-center justify-center h-full'><span class='text-small text-gray-500'>Histogram Equalization</span><img src='" + histogramCombined + "' width='300' height='400'></div>");
 

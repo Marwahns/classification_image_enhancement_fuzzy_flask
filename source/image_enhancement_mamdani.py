@@ -102,9 +102,32 @@ def Infer(i, M, get_fuzzy_set=False):
 
 ## Implementasi Fuzzy Mamdani
 # Proposed fuzzy method
+# def FuzzyContrastEnhance(gray):
+#     # Convert cv2.UMat to NumPy array
+#     gray_array = gray.get().astype(np.uint8)
+
+#     # Precompute the fuzzy transform
+#     x = list(range(0, 256))
+#     FuzzyTransform = [Infer(np.array([i]), 127) for i in x]
+
+#     # Apply the transform to grayscale image
+#     enhanced = np.array([FuzzyTransform[pixel] for pixel in gray_array.flatten()]).reshape(gray_array.shape)
+
+#     # Min-max scale the output image to fit (0, 255)
+#     Min = np.min(enhanced)
+#     Max = np.max(enhanced)
+#     enhanced = (enhanced - Min) / (Max - Min) * 255
+
+#     # Convert NumPy array back to cv2.UMat
+#     enhanced = cv2.UMat(enhanced.astype(np.uint8))
+
+#     return enhanced
+
 def FuzzyContrastEnhance(gray):
-    # Convert cv2.UMat to NumPy array
-    gray_array = gray.get().astype(np.uint8)
+    if isinstance(gray, cv2.UMat):
+        gray_array = gray.get().astype(np.uint8)
+    else:
+        gray_array = gray.astype(np.uint8)
 
     # Precompute the fuzzy transform
     x = list(range(0, 256))
@@ -118,7 +141,9 @@ def FuzzyContrastEnhance(gray):
     Max = np.max(enhanced)
     enhanced = (enhanced - Min) / (Max - Min) * 255
 
-    # Convert NumPy array back to cv2.UMat
-    enhanced = cv2.UMat(enhanced.astype(np.uint8))
+    # Convert NumPy array back to cv2.UMat if necessary
+    if isinstance(gray, cv2.UMat):
+        enhanced = cv2.UMat(enhanced.astype(np.uint8))
 
     return enhanced
+

@@ -41,8 +41,16 @@ def convert_dcm(file_content):
         return encoded_image
 
 
+# def open_image(file):
+#     return Image.open(file)
+
 def open_image(file):
-    return Image.open(file)
+    if file.filename.lower().endswith(('.jpg', '.jpeg', '.png')):
+        # Handle regular image file
+        return Image.open(file)
+
+    if file.filename.lower().endswith('.dcm'):
+        return Image.open(file.stream)
 
 # import pydicom
 
@@ -73,18 +81,48 @@ def open_image(file):
 #     raise ValueError('Invalid file format. Only .jpg, .jpeg, .png, and .dcm files are supported.')
 
 
+# def read_image(file):
+    # image_np = np.array(open_image(file))
+    # return cv2.UMat(image_np)
+
+# def read_image(file):
+#     if isinstance(file, cv2.UMat):
+#         return file
+#     else:
+#         image_np = np.array(open_image(file))
+#         return cv2.UMat(image_np)
+
+from pydicom.pixel_data_handlers.util import convert_color_space
+
 def read_image(file):
-    image_np = np.array(open_image(file))
-    return cv2.UMat(image_np)
+    if file.filename.lower().endswith(('.jpg', '.jpeg', '.png')):
+        if isinstance(file, cv2.UMat):
+            return file
+        else:
+            image_np = np.array(open_image(file))
+            return cv2.UMat(image_np)
+
+    if file.filename.lower().endswith('.dcm'):
+        # Read DICOM file with pydicom
+        dcm = pydicom.dcmread(file, force=True)
+        # Get pixel array from DCM data
+        pixel_array = dcm.pixel_array
+        return pixel_array
 
 
 def UMatToPIL(image):
     return Image.fromarray(image.get())
 
 
-def ndarrayToPIL(image):
-    return Image.fromarray(image)
+# def ndarrayToPIL(image):
+#     return Image.fromarray(image)
 
+def ndarrayToPIL(image):
+    if isinstance(image, cv2.UMat):
+        image = cv2.UMat.get(image)
+    else:
+        image = image.astype(np.uint8)
+    return Image.fromarray(image)
 
 def get_uri(image):
     image_data = image

@@ -2,7 +2,9 @@ from flask import Flask, render_template, request, jsonify
 from source.pneumonia_detection import detect_pneumonia
 from source.handle_image import get_uri, read_image, open_image, UMatToPIL, ndarrayToPIL, convert_dcm
 from source.image_enhancement_mamdani import FuzzyContrastEnhance
-from source.image_enhancement import combineMamdani, combineSugeno, combineTsukamoto, combineHistogram, calculate
+from source.image_enhancement_sugeno import FuzzySugenoContrastEnhance
+from source.image_enhancement_tsukamoto import FuzzyTsukamotoContrastEnhance
+from source.image_enhancement import combineMamdani, combineSugeno, combineTsukamoto, combineHistogram, histogramEqualization, clahe, calculate
 import io
 import cv2
 import os
@@ -73,10 +75,13 @@ def process():
 
         if file:
             # Enhancement
-            mamdani_enhancement = get_uri(ndarrayToPIL(combineMamdani(read_image(file))))
-            sugeno_enhancement = get_uri(ndarrayToPIL(combineSugeno(read_image(file))))
-            tsukamoto_enhancement = get_uri(ndarrayToPIL(combineTsukamoto(read_image(file))))
-            histogram_enhancement = get_uri(ndarrayToPIL(combineHistogram(read_image(file))))
+            histogram_enhancement = get_uri(ndarrayToPIL(histogramEqualization(read_image(file))))
+            mamdani_enhancement = get_uri(ndarrayToPIL(FuzzyContrastEnhance(read_image(file))))
+            sugeno_enhancement = get_uri(ndarrayToPIL(FuzzySugenoContrastEnhance(read_image(file))))
+            tsukamoto_enhancement = get_uri(ndarrayToPIL(FuzzyTsukamotoContrastEnhance(read_image(file))))
+
+            # Clahe
+            clahe_enhancement = get_uri(ndarrayToPIL(clahe(read_image(file))))
 
             # Combine Enhancement
             enhanced_image = get_uri(ndarrayToPIL(combineMamdani(read_image(file))))
@@ -89,7 +94,7 @@ def process():
                 "sugeno_enhancement": sugeno_enhancement, 
                 "tsukamoto_enhancement": tsukamoto_enhancement, 
                 "histogram_enhancement": histogram_enhancement,
-                
+                "clahe_enhancement": clahe_enhancement,
                 "encoded_image": enhanced_image, 
                 "sugeno_encoded_image": sugeno_enhanced_image, 
                 "tsukamoto_encoded_image": tsukamoto_enhanced_image, 

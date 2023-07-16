@@ -59,11 +59,26 @@ def MamdaniFuzzyContrastEnhance(gray):
     return enhanced.astype(np.uint8)
 
 ## Clahe
+# def clahe(img_example):
+#     img_gray = cv2.cvtColor(img_example, cv2.COLOR_RGB2GRAY)  # Convert to grayscale
+#     clahe = cv2.createCLAHE(clipLimit=40.0, tileGridSize=(8, 8))
+#     img_clahe = clahe.apply(img_gray)
+#     return img_clahe
+
 def clahe(img_example):
-    img_gray = cv2.cvtColor(img_example, cv2.COLOR_RGB2GRAY)  # Convert to grayscale
+    if isinstance(img_example, cv2.UMat):
+        img_example = cv2.UMat.get(img_example)
+
+    if len(img_example.shape) > 2 and img_example.shape[2] == 3:
+        img_gray = cv2.cvtColor(img_example, cv2.COLOR_RGB2GRAY)  # Convert to grayscale
+    else:
+        img_gray = img_example  # Grayscale image
+
     clahe = cv2.createCLAHE(clipLimit=40.0, tileGridSize=(8, 8))
     img_clahe = clahe.apply(img_gray)
     return img_clahe
+
+
 
 ## Morphologi
 ## applyStructuringElement masukkin si fuzzy nya
@@ -91,28 +106,51 @@ def medianFilter(img_example):
     return noised_samples_example
 
 # Combine the different approaches
+# def combineMamdani(img_example):
+#     # img_fuzzy = MamdaniFuzzyContrastEnhance(img_example)
+#     # channel_1 = cv2.cvtColor(img_example, cv2.COLOR_RGB2GRAY)  # Convert to grayscale
+#     # channel_2 = clahe(img_example)
+#     # channel_3 = applyStructuringElement(img_fuzzy)
+
+#     # output = np.dstack((channel_1, channel_2, channel_3))
+
+#     # return output
+#     img_fuzzy = FuzzyContrastEnhance(img_example)
+
+#     # Ensure img_example has 3 channels (RGB format)
+#     if len(img_example.get().shape) < 3 or img_example.get().shape[2] != 3:
+#         img_example = cv2.cvtColor(img_example.get(), cv2.COLOR_GRAY2RGB)
+
+#     channel_1 = cv2.cvtColor(img_example, cv2.COLOR_RGB2GRAY)  # Convert to grayscale
+#     channel_2 = clahe(img_example)
+#     channel_3 = applyStructuringElement(img_fuzzy)
+
+#     # Convert channel_1 and channel_3 to numpy arrays
+#     channel_1 = np.array(channel_1)
+#     channel_3 = np.array(channel_3.get())
+
+#     # Resize channel_2 to match the dimensions of channel_1
+#     channel_2 = cv2.resize(channel_2, (channel_1.shape[1], channel_1.shape[0]))
+
+#     # Stack the channels together
+#     output = np.dstack((channel_1, channel_2, channel_3))
+
+#     return output[:, :, :3]
+
 def combineMamdani(img_example):
-    # img_fuzzy = MamdaniFuzzyContrastEnhance(img_example)
-    # channel_1 = cv2.cvtColor(img_example, cv2.COLOR_RGB2GRAY)  # Convert to grayscale
-    # channel_2 = clahe(img_example)
-    # channel_3 = applyStructuringElement(img_fuzzy)
-
-    # output = np.dstack((channel_1, channel_2, channel_3))
-
-    # return output
-    img_fuzzy = FuzzyContrastEnhance(img_example)
+    img_example_np = img_example.get().astype(np.uint8)  # Convert cv2.UMat to NumPy array
+    img_fuzzy = FuzzyContrastEnhance(img_example_np)
 
     # Ensure img_example has 3 channels (RGB format)
-    if len(img_example.get().shape) < 3 or img_example.get().shape[2] != 3:
-        img_example = cv2.cvtColor(img_example.get(), cv2.COLOR_GRAY2RGB)
+    if len(img_example_np.shape) < 3 or img_example_np.shape[2] != 3:
+        img_example_np = cv2.cvtColor(img_example_np, cv2.COLOR_GRAY2RGB)
 
-    channel_1 = cv2.cvtColor(img_example, cv2.COLOR_RGB2GRAY)  # Convert to grayscale
-    channel_2 = clahe(img_example)
+    channel_1 = cv2.cvtColor(img_example_np, cv2.COLOR_RGB2GRAY)  # Convert to grayscale
+    channel_2 = clahe(img_example_np)
     channel_3 = applyStructuringElement(img_fuzzy)
 
     # Convert channel_1 and channel_3 to numpy arrays
     channel_1 = np.array(channel_1)
-    channel_3 = np.array(channel_3.get())
 
     # Resize channel_2 to match the dimensions of channel_1
     channel_2 = cv2.resize(channel_2, (channel_1.shape[1], channel_1.shape[0]))
@@ -121,13 +159,41 @@ def combineMamdani(img_example):
     output = np.dstack((channel_1, channel_2, channel_3))
 
     return output[:, :, :3]
+
+
+# def combineSugeno(img_example):
+#     img_fuzzy = FuzzySugenoContrastEnhance(img_example)
+
+#     # Ensure img_example has 3 channels (RGB format)
+#     if len(img_example.get().shape) < 3 or img_example.get().shape[2] != 3:
+#         img_example = cv2.cvtColor(img_example.get(), cv2.COLOR_GRAY2RGB)
+
+#     channel_1 = cv2.cvtColor(img_example, cv2.COLOR_RGB2GRAY)  # Convert to grayscale
+#     channel_2 = clahe(img_example)
+#     channel_3 = applyStructuringElement(img_fuzzy)
+
+#     # Convert channel_1 and channel_3 to numpy arrays
+#     channel_1 = np.array(channel_1)
+#     channel_3 = np.array(channel_3.get())
+
+#     # Resize channel_2 to match the dimensions of channel_1
+#     channel_2 = cv2.resize(channel_2, (channel_1.shape[1], channel_1.shape[0]))
+
+#     # Stack the channels together
+#     output = np.dstack((channel_1, channel_2, channel_3))
+
+#     return output[:, :, :3]
 
 def combineSugeno(img_example):
     img_fuzzy = FuzzySugenoContrastEnhance(img_example)
 
+    # Convert img_example to NumPy array if it is a cv2.UMat object
+    if isinstance(img_example, cv2.UMat):
+        img_example = cv2.UMat.get(img_example)
+
     # Ensure img_example has 3 channels (RGB format)
-    if len(img_example.get().shape) < 3 or img_example.get().shape[2] != 3:
-        img_example = cv2.cvtColor(img_example.get(), cv2.COLOR_GRAY2RGB)
+    if len(img_example.shape) < 3 or img_example.shape[2] != 3:
+        img_example = cv2.cvtColor(img_example, cv2.COLOR_GRAY2RGB)
 
     channel_1 = cv2.cvtColor(img_example, cv2.COLOR_RGB2GRAY)  # Convert to grayscale
     channel_2 = clahe(img_example)
@@ -146,28 +212,28 @@ def combineSugeno(img_example):
     return output[:, :, :3]
 
 
-def combineTsukamoto(img_example):
-    img_fuzzy = FuzzyTsukamotoContrastEnhance(img_example)
+# def combineTsukamoto(img_example):
+#     img_fuzzy = FuzzyTsukamotoContrastEnhance(img_example)
 
-    # Ensure img_example has 3 channels (RGB format)
-    if len(img_example.get().shape) < 3 or img_example.get().shape[2] != 3:
-        img_example = cv2.cvtColor(img_example.get(), cv2.COLOR_GRAY2RGB)
+#     # Ensure img_example has 3 channels (RGB format)
+#     if len(img_example.get().shape) < 3 or img_example.get().shape[2] != 3:
+#         img_example = cv2.cvtColor(img_example.get(), cv2.COLOR_GRAY2RGB)
 
-    channel_1 = cv2.cvtColor(img_example, cv2.COLOR_RGB2GRAY)  # Convert to grayscale
-    channel_2 = clahe(img_example)
-    channel_3 = applyStructuringElement(img_fuzzy)
+#     channel_1 = cv2.cvtColor(img_example, cv2.COLOR_RGB2GRAY)  # Convert to grayscale
+#     channel_2 = clahe(img_example)
+#     channel_3 = applyStructuringElement(img_fuzzy)
 
-    # Convert channel_1 and channel_3 to numpy arrays
-    channel_1 = np.array(channel_1)
-    channel_3 = np.array(channel_3.get())
+#     # Convert channel_1 and channel_3 to numpy arrays
+#     channel_1 = np.array(channel_1)
+#     channel_3 = np.array(channel_3.get())
 
-    # Resize channel_2 to match the dimensions of channel_1
-    channel_2 = cv2.resize(channel_2, (channel_1.shape[1], channel_1.shape[0]))
+#     # Resize channel_2 to match the dimensions of channel_1
+#     channel_2 = cv2.resize(channel_2, (channel_1.shape[1], channel_1.shape[0]))
 
-    # Stack the channels together
-    output = np.dstack((channel_1, channel_2, channel_3))
+#     # Stack the channels together
+#     output = np.dstack((channel_1, channel_2, channel_3))
 
-    return output[:, :, :3]
+#     return output[:, :, :3]
 
     # img_fuzzy = FuzzyTsukamotoContrastEnhance(img_example)
     # channel_1 = cv2.cvtColor(img_example, cv2.COLOR_RGB2GRAY)  # Convert to grayscale
@@ -188,48 +254,124 @@ def combineTsukamoto(img_example):
 
     # return output[:, :, :3]
 
+def combineTsukamoto(img_example):
+    img_fuzzy = FuzzyTsukamotoContrastEnhance(img_example)
+
+    # Convert img_example to NumPy array if it is a cv2.UMat object
+    if isinstance(img_example, cv2.UMat):
+        img_example = cv2.UMat.get(img_example)
+
+    # Ensure img_example has 3 channels (RGB format)
+    if len(img_example.shape) < 3 or img_example.shape[2] != 3:
+        img_example = cv2.cvtColor(img_example, cv2.COLOR_GRAY2RGB)
+
+    channel_1 = cv2.cvtColor(img_example, cv2.COLOR_RGB2GRAY)  # Convert to grayscale
+    channel_2 = clahe(img_example)
+    channel_3 = applyStructuringElement(img_fuzzy)
+
+    # Convert channel_1 and channel_3 to numpy arrays
+    channel_1 = np.array(channel_1)
+    channel_3 = np.array(channel_3.get())
+
+    # Resize channel_2 to match the dimensions of channel_1
+    channel_2 = cv2.resize(channel_2, (channel_1.shape[1], channel_1.shape[0]))
+
+    # Stack the channels together
+    output = np.dstack((channel_1, channel_2, channel_3))
+
+    return output[:, :, :3]
+
+
+
+# def histogramEqualization(img_example):
+#     img_example_hist = cv2.equalizeHist(img_example)
+#     return img_example_hist
+
 def histogramEqualization(img_example):
-    img_example_hist = cv2.equalizeHist(img_example)
+    if isinstance(img_example, cv2.UMat):
+        img_example = cv2.UMat.get(img_example)
+
+    if len(img_example.shape) > 2 and img_example.shape[2] == 3:
+        img_gray = cv2.cvtColor(img_example, cv2.COLOR_RGB2GRAY)  # Convert to grayscale
+    else:
+        img_gray = img_example  # Grayscale image
+
+    if img_gray.dtype != np.uint8:
+        img_gray = img_gray.astype(np.uint8)
+
+    img_example_hist = cv2.equalizeHist(img_gray)
     return img_example_hist
 
-def combineHistogram(img_example):
-    # img_example_gray = cv2.cvtColor(img_example, cv2.COLOR_RGB2GRAY)  # Convert to grayscale
-    # img_example_hist = cv2.equalizeHist(img_example_gray)
 
-    # channel_1 = np.array(img_example_gray.get())  # Convert to NumPy array
-    # channel_2 = clahe(img_example)
-    # channel_3 = applyStructuringElement(img_example_hist)
 
-    # # Check if channel_1 has valid dimensions
-    # if len(channel_1.shape) < 2:
-    #     return None
+# def combineHistogram(img_example):
+#     # img_example_gray = cv2.cvtColor(img_example, cv2.COLOR_RGB2GRAY)  # Convert to grayscale
+#     # img_example_hist = cv2.equalizeHist(img_example_gray)
 
-    # # Resize channel_2 and channel_3 to match the dimensions of channel_1
-    # channel_2 = cv2.resize(channel_2, (channel_1.shape[1], channel_1.shape[0]))
-    # channel_3 = cv2.resize(channel_3, (channel_1.shape[1], channel_1.shape[0]))
+#     # channel_1 = np.array(img_example_gray.get())  # Convert to NumPy array
+#     # channel_2 = clahe(img_example)
+#     # channel_3 = applyStructuringElement(img_example_hist)
 
-    # # Convert channel_2 and channel_3 to NumPy arrays
-    # channel_2 = np.array(channel_2.get())
-    # channel_3 = np.array(channel_3.get())
+#     # # Check if channel_1 has valid dimensions
+#     # if len(channel_1.shape) < 2:
+#     #     return None
 
-    # # Stack the channels together
-    # output = np.dstack((channel_1, channel_2, channel_3))
+#     # # Resize channel_2 and channel_3 to match the dimensions of channel_1
+#     # channel_2 = cv2.resize(channel_2, (channel_1.shape[1], channel_1.shape[0]))
+#     # channel_3 = cv2.resize(channel_3, (channel_1.shape[1], channel_1.shape[0]))
 
-    # return output[:, :, :3]
-    # Ensure img_example has 3 channels (RGB format)
-    if len(img_example.get().shape) < 3 or img_example.get().shape[2] != 3:
-        img_example = cv2.cvtColor(img_example.get(), cv2.COLOR_GRAY2RGB)
+#     # # Convert channel_2 and channel_3 to NumPy arrays
+#     # channel_2 = np.array(channel_2.get())
+#     # channel_3 = np.array(channel_3.get())
+
+#     # # Stack the channels together
+#     # output = np.dstack((channel_1, channel_2, channel_3))
+
+#     # return output[:, :, :3]
+#     # Ensure img_example has 3 channels (RGB format)
+#     if len(img_example.get().shape) < 3 or img_example.get().shape[2] != 3:
+#         img_example = cv2.cvtColor(img_example.get(), cv2.COLOR_GRAY2RGB)
     
-    img_example_gray = cv2.cvtColor(img_example, cv2.COLOR_RGB2GRAY)  # Convert to grayscale
+#     img_example_gray = cv2.cvtColor(img_example, cv2.COLOR_RGB2GRAY)  # Convert to grayscale
+#     img_example_hist = cv2.equalizeHist(img_example_gray)
+
+#     channel_1 = np.array(img_example_gray)  # Convert to NumPy array
+#     channel_2 = clahe(img_example)
+#     channel_3 = applyStructuringElement(img_example_hist)
+
+#     # Check if channel_1 has valid dimensions
+#     if len(channel_1.shape) < 2:
+#         return None
+
+#     # Resize channel_2 and channel_3 to match the dimensions of channel_1
+#     channel_2 = cv2.resize(channel_2, (channel_1.shape[1], channel_1.shape[0]))
+#     channel_3 = cv2.resize(channel_3, (channel_1.shape[1], channel_1.shape[0]))
+
+#     # Convert channel_2 and channel_3 to NumPy arrays
+#     channel_2 = np.array(channel_2)
+#     channel_3 = np.array(channel_3)
+
+#     # Stack the channels together
+#     output = np.dstack((channel_1, channel_2, channel_3))
+
+#     return output[:, :, :3]
+
+def combineHistogram(img_example):
+    img_example_np = img_example.get()
+
+    if len(img_example_np.shape) < 3 or img_example_np.shape[2] != 3:
+        img_example_np = cv2.cvtColor(img_example_np, cv2.COLOR_GRAY2RGB)
+    
+    img_example_gray = cv2.cvtColor(img_example_np, cv2.COLOR_RGB2GRAY)  # Convert to grayscale
     img_example_hist = cv2.equalizeHist(img_example_gray)
 
     channel_1 = np.array(img_example_gray)  # Convert to NumPy array
-    channel_2 = clahe(img_example)
+    channel_2 = clahe(img_example_np)
     channel_3 = applyStructuringElement(img_example_hist)
 
     # Check if channel_1 has valid dimensions
     if len(channel_1.shape) < 2:
-        return None
+        return np.zeros((img_example_np.shape[0], img_example_np.shape[1], 3), dtype=np.uint8)
 
     # Resize channel_2 and channel_3 to match the dimensions of channel_1
     channel_2 = cv2.resize(channel_2, (channel_1.shape[1], channel_1.shape[0]))
@@ -243,6 +385,8 @@ def combineHistogram(img_example):
     output = np.dstack((channel_1, channel_2, channel_3))
 
     return output[:, :, :3]
+
+
 
 # def MSE(img1, img2):
 #     return np.mean(np.square(img1 - img2))
