@@ -44,6 +44,34 @@ def convert_dcm(file_content):
 def open_image(file):
     return Image.open(file)
 
+# import pydicom
+
+# def open_image(file):
+#     if file.filename.lower().endswith(('.jpg', '.jpeg', '.png')):
+#         # Handle regular image file
+#         return Image.open(file)
+
+#     if file.filename.lower().endswith('.dcm'):
+#         try:
+#             # Handle DICOM file
+#             dcm = pydicom.dcmread(file)
+#             if hasattr(dcm, 'TransferSyntaxUID'):
+#                 pixel_array = dcm.pixel_array
+#                 image = Image.fromarray(np.uint8(pixel_array))
+#                 return image
+#             else:
+#                 # Assign a default Transfer Syntax UID if missing
+#                 default_transfer_syntax = '1.2.840.10008.1.2'  # Adjust the default UID as needed
+#                 dcm.TransferSyntaxUID = default_transfer_syntax
+#                 pixel_array = dcm.pixel_array
+#                 image = Image.fromarray(np.uint8(pixel_array))
+#                 return image
+#         except pydicom.errors.InvalidDicomError:
+#             raise pydicom.errors.InvalidDicomError('DICOM file is missing TransferSyntaxUID in the file meta information.')
+
+#     # Invalid file format
+#     raise ValueError('Invalid file format. Only .jpg, .jpeg, .png, and .dcm files are supported.')
+
 
 def read_image(file):
     image_np = np.array(open_image(file))
