@@ -32,7 +32,7 @@
                 </div>
 
                 <!-- scroll area -->
-                <section class="h-full overflow-auto p-8 w-full h-full flex flex-col">
+                <section class="h-full overflow-auto p-8 w-full flex flex-col">
                     <h1 class="font-semibold text-gray-900 flex flex-wrap justify-center mb-5">Fuzzy Image Enhancement
                     </h1>
                     <header
@@ -58,7 +58,7 @@
 
                     <ul id="gallery" class="flex flex-1 flex-wrap -m-1">
                         <li id="empty"
-                            class="h-full w-full text-center flex flex-col items-center justify-center items-center">
+                            class="h-full w-full text-center flex flex-col items-center justify-center">
                             <img class="mx-auto w-32"
                                 src="https://user-images.githubusercontent.com/507615/54591670-ac0a0180-4a65-11e9-846c-e55ffce0fe7b.png"
                                 alt="no data" />
@@ -420,7 +420,10 @@
                         const tsukamotoCombined = response.tsukamoto_encoded_image
 
                         // alert(enhanced, sugenoEnhanced, tsukamotoEnhanced, histogramEnhanced);
-                        console.log(histogramCombined, mamdaniCombined, sugenoCombined, tsukamotoCombined);
+                        console.log(response.combine_histogram_pnsr);
+                        console.log(response.combine_mamdani_pnsr);
+                        console.log(response.combine_sugeno_pnsr);
+                        console.log(response.combine_tsukamoto_pnsr);
 
                         // Display the enhanced image 
                         // const imageUrl = "data:image/png;base64," + enhanced;

@@ -1,10 +1,10 @@
 from flask import Flask, render_template, request, jsonify
 from source.pneumonia_detection import detect_pneumonia
-from source.handle_image import get_uri, read_image, open_image, UMatToPIL, ndarrayToPIL, convert_dcm
+from source.handle_image import get_uri, read_image, open_image, ndarrayToPIL, convert_dcm
 from source.image_enhancement_mamdani import FuzzyContrastEnhance
 from source.image_enhancement_sugeno import FuzzySugenoContrastEnhance
 from source.image_enhancement_tsukamoto import FuzzyTsukamotoContrastEnhance
-from source.image_enhancement import combineMamdani, combineSugeno, combineTsukamoto, combineHistogram, histogramEqualization, clahe, calculate
+from source.image_enhancement import combineMamdani, combineSugeno, combineTsukamoto, combineHistogram, histogramEqualization, clahe, calculate, calculateCombine
 import io
 import cv2
 import os
@@ -89,6 +89,12 @@ def process():
             tsukamoto_enhanced_image = get_uri(ndarrayToPIL(combineTsukamoto(read_image(file))))
             histogram_enhanced_image = get_uri(ndarrayToPIL(combineHistogram(read_image(file))))
 
+            # PNSR Enhacement
+            histogram_pnsr, mamdani_pnsr, sugeno_pnsr, tsukamoto_pnsr = calculate(read_image(file))
+
+            # PNSR Combine
+            combine_histogram_pnsr, combine_mamdani_pnsr, combine_sugeno_pnsr, combine_tsukamoto_pnsr = calculateCombine(read_image(file))
+
             return jsonify({
                 "mamdani_enhancement": mamdani_enhancement, 
                 "sugeno_enhancement": sugeno_enhancement, 
@@ -99,6 +105,14 @@ def process():
                 "sugeno_encoded_image": sugeno_enhanced_image, 
                 "tsukamoto_encoded_image": tsukamoto_enhanced_image, 
                 "histogram_encoded_image": histogram_enhanced_image,
+                "histogram_pnsr": histogram_pnsr,
+                "mamdani_pnsr": mamdani_pnsr,
+                "sugeno_pnsr": sugeno_pnsr,
+                "tsukamoto_pnsr": tsukamoto_pnsr,
+                "combine_histogram_pnsr": combine_histogram_pnsr,
+                "combine_mamdani_pnsr": combine_mamdani_pnsr,
+                "combine_sugeno_pnsr": combine_sugeno_pnsr,
+                "combine_tsukamoto_pnsr": combine_tsukamoto_pnsr,
             })
 
     # Handle other cases or return an error message

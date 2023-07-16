@@ -645,25 +645,72 @@ def combineHistogram(img_example):
     return output[:, :, :3]
 
 
-
-
 # def MSE(img1, img2):
 #     return np.mean(np.square(img1 - img2))
 
 def MSE(img1, img2):
-    return np.mean(np.square(img1 - img2))
+    if isinstance(img1, cv2.UMat):
+        img1_array = np.asarray(img1.get())
+    else:
+        img1_array = np.asarray(img1)
+    
+    if isinstance(img2, cv2.UMat):
+        img2_array = np.asarray(img2.get())
+    else:
+        img2_array = np.asarray(img2)
+    
+    if len(img1_array.shape) == 3 and len(img2_array.shape) == 2:
+        # Convert img1_array to grayscale if it's color
+        img1_array = cv2.cvtColor(img1_array, cv2.COLOR_RGB2GRAY)
+    elif len(img1_array.shape) == 2 and len(img2_array.shape) == 3:
+        # Convert img2_array to grayscale if it's color
+        img2_array = cv2.cvtColor(img2_array, cv2.COLOR_RGB2GRAY)
+    
+    return np.mean(np.square(img1_array - img2_array))
+
 
 def PSNR(Max, MSE):
     return 10*math.log10(Max**2/MSE)
 
+
 def calculate(img_original):
-    # Convert the image to grayscale
-    img_fuzzy = FuzzyContrastEnhance(img_original)
+    ## Convert the image to grayscale
+    img_histogram = histogramEqualization(img_original)
+    img_mamdani = FuzzyContrastEnhance(img_original)
+    img_sugeno = FuzzySugenoContrastEnhance(img_original)
+    img_tsukamoto = FuzzyTsukamotoContrastEnhance(img_original)
 
-    # Calculate the MSE values
-    # mse_histogram = MSE(img_original, img_fuzzy)
+    ## Calculate the MSE values
+    mse_histogram = MSE(img_original, img_histogram)
+    mse_mamdani = MSE(img_original, img_mamdani)
+    mse_sugeno = MSE(img_original, img_sugeno)
+    mse_tsukamoto = MSE(img_original, img_tsukamoto)
 
-    # # Calculate the PSNR using the MSE
-    # psnr_histogram = PSNR(255**2, mse_histogram)
+    ## Calculate the PSNR using the MSE
+    psnr_histogram = PSNR(255**2, mse_histogram)
+    psnr_mamdani = PSNR(255**2, mse_mamdani)
+    psnr_sugeno = PSNR(255**2, mse_sugeno)
+    psnr_tsukamoto = PSNR(255**2, mse_tsukamoto)
 
-    return img_fuzzy
+    return psnr_histogram, psnr_mamdani, psnr_sugeno, psnr_tsukamoto
+
+def calculateCombine(img_original):
+    ## Convert the image to grayscale
+    img_histogram = combineHistogram(img_original)
+    img_mamdani = combineMamdani(img_original)
+    img_sugeno = combineSugeno(img_original)
+    img_tsukamoto = combineTsukamoto(img_original)
+
+    ## Calculate the MSE values
+    mse_histogram = MSE(img_original, img_histogram)
+    mse_mamdani = MSE(img_original, img_mamdani)
+    mse_sugeno = MSE(img_original, img_sugeno)
+    mse_tsukamoto = MSE(img_original, img_tsukamoto)
+
+    ## Calculate the PSNR using the MSE
+    psnr_histogram = PSNR(255**2, mse_histogram)
+    psnr_mamdani = PSNR(255**2, mse_mamdani)
+    psnr_sugeno = PSNR(255**2, mse_sugeno)
+    psnr_tsukamoto = PSNR(255**2, mse_tsukamoto)
+
+    return psnr_histogram, psnr_mamdani, psnr_sugeno, psnr_tsukamoto

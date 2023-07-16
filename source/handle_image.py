@@ -92,8 +92,6 @@ def open_image(file):
 #         image_np = np.array(open_image(file))
 #         return cv2.UMat(image_np)
 
-from pydicom.pixel_data_handlers.util import convert_color_space
-
 def read_image(file):
     if file.filename.lower().endswith(('.jpg', '.jpeg', '.png')):
         if isinstance(file, cv2.UMat):
@@ -117,12 +115,27 @@ def UMatToPIL(image):
 # def ndarrayToPIL(image):
 #     return Image.fromarray(image)
 
+# def ndarrayToPIL(image):
+#     if isinstance(image, cv2.UMat):
+#         image = cv2.UMat.get(image)
+#     else:
+#         image = image.astype(np.uint8)
+#     return Image.fromarray(image)
+
 def ndarrayToPIL(image):
     if isinstance(image, cv2.UMat):
         image = cv2.UMat.get(image)
+    elif isinstance(image, float):
+        image = np.array(image).astype(np.uint8)
     else:
         image = image.astype(np.uint8)
+
+    if len(image.shape) < 2:
+        image = np.expand_dims(image, axis=-1)
+    
     return Image.fromarray(image)
+
+
 
 def get_uri(image):
     image_data = image
