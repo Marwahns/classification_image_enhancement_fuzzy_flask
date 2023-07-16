@@ -57,8 +57,7 @@
                     </h1>
 
                     <ul id="gallery" class="flex flex-1 flex-wrap -m-1">
-                        <li id="empty"
-                            class="h-full w-full text-center flex flex-col items-center justify-center">
+                        <li id="empty" class="h-full w-full text-center flex flex-col items-center justify-center">
                             <img class="mx-auto w-32"
                                 src="https://user-images.githubusercontent.com/507615/54591670-ac0a0180-4a65-11e9-846c-e55ffce0fe7b.png"
                                 alt="no data" />
@@ -86,14 +85,27 @@
                     </div>
 
                     <div class="block mt-5">
-                        <p class="mt-1 hidden" id="txtPnsr">Histogram Equalization Enhancement: <span
+                        <span id="titlePnsr" class="hidden">PNSR Enhancement</span>
+                        <p class="mt-1 hidden txtPnsr">Histogram Equalization Enhancement: <span
                                 id="pnsr-container-histogram"></span></p>
-                        <p class="mt-1 hidden" id="txtPnsr">Fuzzy Mamdani Enhancement: <span
+                        <p class="mt-1 hidden txtPnsr">Fuzzy Mamdani Enhancement: <span
                                 id="pnsr-container-mamdani"></span></p>
-                        <p class="mt-1 hidden" id="txtPnsr">Fuzzy Sugeno Enhancement: <span
+                        <p class="mt-1 hidden txtPnsr">Fuzzy Sugeno Enhancement: <span
                                 id="pnsr-container-sugeno"></span></p>
-                        <p class="mt-1 hidden" id="txtPnsr">Fuzzy Tsukamoto Enhancement: <span
+                        <p class="mt-1 hidden txtPnsr">Fuzzy Tsukamoto Enhancement: <span
                                 id="pnsr-container-tsukamoto"></span></p>
+                    </div>
+
+                    <div class="block mt-5">
+                        <span id="titleCombinePnsr" class="hidden">PNSR Combine Enhancement</span>
+                        <p class="mt-1 hidden txtPnsr">Histogram Equalization Enhancement: <span
+                                id="combine-pnsr-container-histogram"></span></p>
+                        <p class="mt-1 hidden txtPnsr">Fuzzy Mamdani Enhancement: <span
+                                id="combine-pnsr-container-mamdani"></span></p>
+                        <p class="mt-1 hidden txtPnsr">Fuzzy Sugeno Enhancement: <span
+                                id="combine-pnsr-container-sugeno"></span></p>
+                        <p class="mt-1 hidden txtPnsr">Fuzzy Tsukamoto Enhancement: <span
+                                id="combine-pnsr-container-tsukamoto"></span></p>
                     </div>
 
                 </section>
@@ -102,7 +114,7 @@
                 <footer class="flex justify-between px-8 pb-8 pt-4">
                     <div class="flex justify-start">
                         <button id="btnPnsr" form="form-image-upload"
-                            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Calculate
+                            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 hidden">Calculate
                             PNSR</button>
                     </div>
 
@@ -350,6 +362,22 @@
                     document.getElementById(ou).remove(ou);
                     gallery.children.length === 1 && empty.classList.remove("hidden");
                     delete FILES[ou];
+                    $("#image-clahe").empty();
+                    $("#image-histogram").empty();
+                    $("#image-mamdani").empty();
+                    $("#image-sugeno").empty();
+                    $("#image-tsukamoto").empty();
+                    $("#image-container-histogram").empty();
+                    $("#image-container").empty();
+                    $("#image-container-sugeno").empty();
+                    $("#image-container-tsukamoto").empty();
+                    $('#btnPnsr').addClass('hidden')
+                    $('#titlePnsr').text('')
+                    $('.txtPnsr').text('')
+                    $('#titleCombinePnsr').text('')
+                    $('#titlePnsr').addClass('hidden')
+                    $('.txtPnsr').addClass('hidden')
+                    $('#titleCombinePnsr').addClass('hidden')
                 }
             };
 
@@ -428,6 +456,8 @@
                         // Display the enhanced image 
                         // const imageUrl = "data:image/png;base64," + enhanced;
 
+                        $("#image-clahe").html("<div class='flex flex-col items-center justify-center h-full'><span class='text-small text-gray-500'>Clahe</span><img src='" + claheEnhancement + "' width='300' height='400'></div>");
+
                         $("#image-histogram").html("<div class='flex flex-col items-center justify-center h-full'><span class='text-small text-gray-500'>Histogram Equalization</span><img src='" + histogramEnhancement + "' width='300' height='400'></div>");
 
                         $("#image-mamdani").html("<div class='flex flex-col items-center justify-center h-full'><span class='text-small text-gray-500'>Fuzzy Mamdani</span><img src='" + mamdaniEnhancement + "' width='300' height='400'></div>");
@@ -435,8 +465,6 @@
                         $("#image-sugeno").html("<div class='flex flex-col items-center justify-center h-full'><span class='text-small text-gray-500'>Fuzzy Sugeno</span><img src='" + sugenoEnhancement + "' width='300' height='400'></div>");
 
                         $("#image-tsukamoto").html("<div class='flex flex-col items-center justify-center h-full'><span class='text-small text-gray-500'>Fuzzy Tsukamoto</span><img src='" + tsukamotoEnhancement + "' width='300' height='400'></div>");
-
-                        $("#image-clahe").html("<div class='flex flex-col items-center justify-center h-full'><span class='text-small text-gray-500'>Clahe</span><img src='" + claheEnhancement + "' width='300' height='400'></div>");
 
                         $("#image-container-histogram").html("<div class='flex flex-col items-center justify-center h-full'><span class='text-small text-gray-500'>Histogram Equalization</span><img src='" + histogramCombined + "' width='300' height='400'></div>");
 
@@ -446,14 +474,20 @@
 
                         $("#image-container-tsukamoto").html("<div class='flex flex-col items-center justify-center h-full'><span class='text-small text-gray-500'>Fuzzy Tsukamoto</span><img src='" + tsukamotoCombined + "' width='300' height='400'></div>");
 
+                        $('#btnPnsr').removeClass('hidden')
+
                         // Calculate PNSR
-                        // $("#pnsr-container-histogram").html("<div class='block flex-col items-center h-full'><span class='text-small text-gray-500'>PNSR Histogram Equalization Enhancement</span>'" + histogramPnsr + "'<span></span></div>");
+                        // Enhancement
+                        $('#pnsr-container-histogram').text(response.histogram_pnsr.toFixed(4))
+                        $('#pnsr-container-mamdani').text(response.mamdani_pnsr.toFixed(4))
+                        $('#pnsr-container-sugeno').text(response.sugeno_pnsr.toFixed(4))
+                        $('#pnsr-container-tsukamoto').text(response.tsukamoto_pnsr.toFixed(4))
 
-                        // $("#pnsr-container-mamdani").html("<div class='block flex-col items-center h-full'><span class='text-small text-gray-500'>PNSR Fuzzy Mamdani Enhancement</span>'" + mamdaniPnsr + "'<span></span></div>");
-
-                        // $("#pnsr-container-sugeno").html("<div class='block flex-col items-center h-full'><span class='text-small text-gray-500'>PNSR Fuzzy Sugeno Enhancement</span>'" + sugenoPnsr + "'<span></span></div>");
-
-                        // $("#pnsr-container-tsukamoto").html("<div class='block flex-col items-center h-full'><span class='text-small text-gray-500'>PNSR Fuzzy Tsukamoto Enhancement</span>'" + tsukamotoPnsr + "'<span></span></div>");
+                        // Combine
+                        $('#combine-pnsr-container-histogram').text(response.combine_histogram_pnsr.toFixed(4))
+                        $('#combine-pnsr-container-mamdani').text(response.combine_mamdani_pnsr.toFixed(4))
+                        $('#combine-pnsr-container-sugeno').text(response.combine_sugeno_pnsr.toFixed(4))
+                        $('#combine-pnsr-container-tsukamoto').text(response.combine_tsukamoto_pnsr.toFixed(4))
                     },
                     error: function (xhr, status, error) {
                         console.log(error);
@@ -465,34 +499,41 @@
             document.getElementById("btnPnsr").onclick = (event) => {
                 event.preventDefault(); // Prevent the default form submission
 
-                // Perform AJAX request to the server
-                $.ajax({
-                    url: "/calculate_pnsr",
-                    type: "POST",
-                    data: new FormData(document.getElementById("form-image-upload")),
-                    processData: false,
-                    contentType: false,
-                    success: function (response) {
-                        // Successful AJAX response
-                        const histogramPnsr = response.psnr_histogram
-                        // const mamdaniPnsr = response.mamdani_uri
-                        // const sugenoPnsr = response.sugeno_uri
-                        // const tsukamotoPnsr = response.tsukamoto_uri
+                // Calculate PNSR
+                $('#titlePnsr').removeClass('hidden')
+                $('.txtPnsr').removeClass('hidden')
 
-                        console.log(histogramPnsr);
+                // Combine
+                $('#titleCombinePnsr').removeClass('hidden')
 
-                        $('#calculate-pnsr').removeClass("hidden")
-                        $('#pnsr-container-histogram').text(histogramPnsr)
-                        // $('#pnsr-container-mamdani').text(mamdaniPnsr)
-                        // $('#pnsr-container-sugeno').text(sugenoPnsr)
-                        // $('#pnsr-container-tsukamoto').text(tsukamotoPnsr)
+                // // Perform AJAX request to the server
+                // $.ajax({
+                //     url: "/calculate_pnsr",
+                //     type: "POST",
+                //     data: new FormData(document.getElementById("form-image-upload")),
+                //     processData: false,
+                //     contentType: false,
+                //     success: function (response) {
+                //         // Successful AJAX response
+                //         const histogramPnsr = response.psnr_histogram
+                //         // const mamdaniPnsr = response.mamdani_uri
+                //         // const sugenoPnsr = response.sugeno_uri
+                //         // const tsukamotoPnsr = response.tsukamoto_uri
 
-                    },
-                    error: function (xhr, status, error) {
-                        // AJAX request error handling
-                        console.log(error);
-                    },
-                });
+                //         console.log(histogramPnsr);
+
+                //         $('#calculate-pnsr').removeClass("hidden")
+                //         $('#pnsr-container-histogram').text(histogramPnsr)
+                //         // $('#pnsr-container-mamdani').text(mamdaniPnsr)
+                //         // $('#pnsr-container-sugeno').text(sugenoPnsr)
+                //         // $('#pnsr-container-tsukamoto').text(tsukamotoPnsr)
+
+                //     },
+                //     error: function (xhr, status, error) {
+                //         // AJAX request error handling
+                //         console.log(error);
+                //     },
+                // });
 
             };
 
@@ -547,6 +588,14 @@
                 $("#image-container-sugeno").empty();
                 $("#image-container-tsukamoto").empty();
 
+                $('#titlePnsr').text('')
+                $('.txtPnsr').text('')
+                $('#titleCombinePnsr').text('')
+
+                $('#btnPnsr').addClass('hidden')
+                $('#titlePnsr').addClass('hidden')
+                $('.txtPnsr').addClass('hidden')
+                $('#titleCombinePnsr').addClass('hidden')
                 // $('#enhancement').addClass("hidden")
                 // $('#submit').removeClass('hidden')
                 // $('#submit').addClass("visible")
