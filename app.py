@@ -61,7 +61,7 @@ def index():
                 return jsonify({"pneumonia_percentage": pneumonia_percentage})
 
 
-    return render_template('layout.html', pneumonia_percentage=pneumonia_percentage)
+    return render_template('index.html', pneumonia_percentage=pneumonia_percentage)
 
 
 @app.route("/process_image", methods=["POST"])
@@ -90,7 +90,7 @@ def process():
             histogram_enhanced_image = get_uri(ndarrayToPIL(combineHistogram(read_image(file))))
 
             # PNSR Enhacement
-            histogram_pnsr, mamdani_pnsr, sugeno_pnsr, tsukamoto_pnsr = calculate(read_image(file))
+            clahe_pnsr, histogram_pnsr, mamdani_pnsr, sugeno_pnsr, tsukamoto_pnsr = calculate(read_image(file))
 
             # PNSR Combine
             combine_histogram_pnsr, combine_mamdani_pnsr, combine_sugeno_pnsr, combine_tsukamoto_pnsr = calculateCombine(read_image(file))
@@ -105,6 +105,7 @@ def process():
                 "sugeno_encoded_image": sugeno_enhanced_image, 
                 "tsukamoto_encoded_image": tsukamoto_enhanced_image, 
                 "histogram_encoded_image": histogram_enhanced_image,
+                "clahe_pnsr": clahe_pnsr,
                 "histogram_pnsr": histogram_pnsr,
                 "mamdani_pnsr": mamdani_pnsr,
                 "sugeno_pnsr": sugeno_pnsr,

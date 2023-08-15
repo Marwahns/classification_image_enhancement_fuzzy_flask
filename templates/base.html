@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- <meta name="description" content="Deskripsi singkat tentang website Anda">
+    <meta name="keywords" content="kata kunci, website">
+    <meta name="author" content="Nama Penulis atau Perusahaan">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#ff0000">
+    <meta property="og:title" content="Judul untuk berbagi di media sosial">
+    <meta property="og:description" content="Deskripsi untuk berbagi di media sosial">
+    <meta property="og:image" content="URL_gambar_thumbnail">
+    <meta property="og:url" content="URL_halaman_utama">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@nama_pengguna_twitter">
+    <meta name="twitter:creator" content="@nama_pengguna_twitter">
+    <meta name="twitter:title" content="Judul untuk berbagi di Twitter">
+    <meta name="twitter:description" content="Deskripsi untuk berbagi di Twitter">
+    <meta name="twitter:image" content="URL_gambar_thumbnail"> -->
+
+    <link rel="icon" type="image/png" href="/static/image/icon-logo.png">
+
+    <!-- Link to Tailwind CSS (CSS framework) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.css" />
+
+    <!-- Link to Font Awesome (icon library) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- Link to your custom CSS file -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/newStyle.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    {% block head %}{% endblock %}
+</head>
+<body class="relative bg-[#F3F3FD]">
+    {% block body %}{% endblock %}
+    {% block script %}{% endblock %}
+</body>
+</html>

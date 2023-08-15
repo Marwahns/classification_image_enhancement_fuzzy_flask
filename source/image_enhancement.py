@@ -675,24 +675,27 @@ def PSNR(Max, MSE):
 
 def calculate(img_original):
     ## Convert the image to grayscale
+    img_clahe = clahe(img_original)
     img_histogram = histogramEqualization(img_original)
     img_mamdani = FuzzyContrastEnhance(img_original)
     img_sugeno = FuzzySugenoContrastEnhance(img_original)
     img_tsukamoto = FuzzyTsukamotoContrastEnhance(img_original)
 
     ## Calculate the MSE values
+    mse_clahe = MSE(img_original, img_clahe)
     mse_histogram = MSE(img_original, img_histogram)
     mse_mamdani = MSE(img_original, img_mamdani)
     mse_sugeno = MSE(img_original, img_sugeno)
     mse_tsukamoto = MSE(img_original, img_tsukamoto)
 
     ## Calculate the PSNR using the MSE
+    psnr_clahe = PSNR(255**2, mse_clahe)
     psnr_histogram = PSNR(255**2, mse_histogram)
     psnr_mamdani = PSNR(255**2, mse_mamdani)
     psnr_sugeno = PSNR(255**2, mse_sugeno)
     psnr_tsukamoto = PSNR(255**2, mse_tsukamoto)
 
-    return psnr_histogram, psnr_mamdani, psnr_sugeno, psnr_tsukamoto
+    return psnr_clahe, psnr_histogram, psnr_mamdani, psnr_sugeno, psnr_tsukamoto
 
 def calculateCombine(img_original):
     ## Convert the image to grayscale

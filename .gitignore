@@ -1,5 +1,8 @@
 node_modules
+source/__pycache__
 .env
 xray_dataset
 index.html
 test.ipynb
+__pycache__
+temp
