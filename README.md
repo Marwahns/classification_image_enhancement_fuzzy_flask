@@ -36,7 +36,7 @@ Start the Flask development server:
 ```
 python app.py
 ```
-Open your web browser and go to http://localhost:5000 to see the Flask web application in action.
+Open your web browser and go to `http://localhost:5000` to see the Flask web application in action.
 
 Once you have generated the requirements.txt file, you can deactivate the virtual environment using the command:
 ```
