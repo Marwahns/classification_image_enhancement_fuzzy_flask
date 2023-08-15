@@ -8,6 +8,6 @@ templates/layout_ori.html
 templates/new_layout.html
 venv
 .env
-package-lock-a.json
-package-a.json
-tailwind-a.config.js
+package-lock.json
+package.json
+tailwind.config.js
