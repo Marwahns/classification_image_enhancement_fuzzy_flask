@@ -15,8 +15,6 @@
 
 ## Merge modified L channel to the original AB channels, convert output image from CIELAB to RGB.
 
-import math
-
 import cv2
 import numpy as np
 

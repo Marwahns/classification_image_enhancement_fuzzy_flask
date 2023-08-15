@@ -1,5 +1,6 @@
 node_modules
-source/__pycache__
+source/__pycache__/
+venv
 .env
 xray_dataset
 index.html

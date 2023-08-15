@@ -1,18 +1,10 @@
 # untuk komputasi numerik. seperti konversi list menjadi array, menghitung statistik, dan memanipulasi array
 import numpy as np 
 
-# untuk operasi morfologi pada citra, seperti dilasi, erosi, opening, closing, dan transformasi lainnya.
-import skimage.morphology
-
-# untuk membuat elemen struktur berbentuk disk (lingkaran) yang akan digunakan dalam operasi morfologi.
-from skimage.morphology import disk
-
 # menggunakannya untuk membaca, menulis, dan memanipulasi gambar, mengaplikasikan filter dan efek, melakukan deteksi objek, dsb
 import cv2
 
 import math
-
-from source.handle_image import get_uri, read_image, open_image, UMatToPIL, ndarrayToPIL, convert_dcm
 
 # https://stackoverflow.com/questions/7110899/how-do-i-apply-a-dct-to-an-image-in-python
 # transformasi Fourier cepat (FFT) dan transformasi kosinus diskret (DCT)

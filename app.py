@@ -5,9 +5,6 @@ from source.image_enhancement_mamdani import FuzzyContrastEnhance
 from source.image_enhancement_sugeno import FuzzySugenoContrastEnhance
 from source.image_enhancement_tsukamoto import FuzzyTsukamotoContrastEnhance
 from source.image_enhancement import combineMamdani, combineSugeno, combineTsukamoto, combineHistogram, histogramEqualization, clahe, calculate, calculateCombine
-import io
-import cv2
-import os
 
 app = Flask(__name__)
 
